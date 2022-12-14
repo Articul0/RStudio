@@ -125,13 +125,18 @@ getRaiting <- function(criteria, n = "best") {
     hospitalDatum = hospitalDatum[order(hospitalDatum[, criterias[criteria]], hospitalDatum[, 'Hospital.Name'], decreasing = FALSE), ]
     
     
-    if (nrow(hospitalDatum) == 0 || nrow(hospitalDatum) < n) {
+    if (nrow(hospitalDatum) == 0) {
       datum <- data.frame(NA, state)
     } else if (is.numeric(n)) {
-      datum <- data.frame(
+      if (nrow(hospitalDatum) < n) {
+        datum <- data.frame(NA, state)
+      } else {
+        datum <- data.frame(
           hospitalDatum[n, 'Hospital.Name'],
           hospitalDatum[n, 'State']
         )
+      }
+      
     } else if (n == 'best') {
       datum <- data.frame(
           hospitalDatum[1, 'Hospital.Name'], 
@@ -148,5 +153,5 @@ getRaiting <- function(criteria, n = "best") {
     statesData <- rbind(statesData, datum)
   }
   
-  return(statesData)
+  return(statesData[order(statesData[, 'state'], decreasing = FALSE), ])
 }
